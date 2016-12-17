@@ -1,0 +1,42 @@
+- name: Install glibc.
+  yum:
+     name: glibc.i686
+     state: present
+
+- name: Install kernel-devel.
+  yum:
+     name: kernel-devel
+     state: present
+
+- name: Install antivirus.
+  yum:
+    name: "{{ package_path }}"
+    state: present
+
+- name: Copy key
+  copy:
+    src: "{{ key_file_name }}"
+    dest: "/opt/kaspersky/{{ key_file_name }}"
+    force: yes
+
+- name: Copy setup script
+  copy:
+    src: setup.ini
+    dest: /opt/kaspersky/setup.ini
+    force: yes
+
+- name: Setup antivirus.
+  script: /opt/kaspersky/kav4fs/bin/kav4fs-setup.pl \
+          --auto-install=/opt/kaspersky/setup.ini
+
+- name: Create short link.
+  file:
+    src: /opt/kaspersky/kav4fs/bin/kav4fs-control
+    dest: /usr/bin/kav4fs-control
+    state: link
+
+- name: Ensure it works.
+  service:
+    name: kav4fs-supervisor
+    state: running
+    enabled: yes

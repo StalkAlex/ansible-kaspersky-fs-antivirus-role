@@ -1,0 +1,3 @@
+---
+key_file_name: 519510BA.key
+package_path: "{{ ftp_nadir }}/predesign/antivirus.rpm"
